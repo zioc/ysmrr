@@ -10,11 +10,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/chelnak/ysmrr/pkg/animations"
-	"github.com/chelnak/ysmrr/pkg/colors"
-	"github.com/chelnak/ysmrr/pkg/tput"
 	"github.com/mattn/go-colorable"
-	"github.com/mattn/go-isatty"
+	"github.com/zioc/ysmrr/pkg/animations"
+	"github.com/zioc/ysmrr/pkg/colors"
+	"github.com/zioc/ysmrr/pkg/tput"
 )
 
 // SpinnerManager manages spinners
@@ -46,6 +45,7 @@ type spinnerManager struct {
 	done          chan bool
 	hasUpdate     chan bool
 	ticks         *time.Ticker
+	lines         int
 	frame         int
 	tty           bool
 }
@@ -185,16 +185,38 @@ func (sm *spinnerManager) renderFrame(animate bool) {
 	}
 
 	spinners := sm.GetSpinners()
+	linesCount := len(spinners)
+	width, height := tput.TtySize()
+	if width != 0 {
+		linesCount = 0
+		for _, s := range spinners {
+			linesCount = linesCount + (len(s.message)+2)/width
+			if (len(s.message)+2)%width != 0 {
+				linesCount = linesCount + 1
+			}
+		}
+	}
+	if linesCount > sm.lines {
+		sm.lines = linesCount
+	} else if height != 0 && sm.lines > height {
+		sm.lines = height
+	}
 
-	tput.BufScreen(sm.writer, len(spinners))
-	tput.Cuu(sm.writer, len(spinners))
+	tput.BufScreen(sm.writer, linesCount)
+	tput.Cuu(sm.writer, linesCount)
 	tput.Sc(sm.writer)
 
 	for _, s := range spinners {
 		tput.ClearLine(sm.writer)
 		s.Print(sm.writer, sm.chars[sm.frame])
 	}
-
+	// Clear extra lines if any
+	for i := linesCount; i < sm.lines; i++ {
+		tput.ClearLine(sm.writer)
+		if i+1 < sm.lines {
+			tput.Write(sm.writer, "\n")
+		}
+	}
 	if animate {
 		sm.setNextFrame()
 	}
@@ -240,7 +262,8 @@ func NewSpinnerManager(options ...managerOption) SpinnerManager {
 		writer:        getWriter(),
 		done:          make(chan bool),
 		hasUpdate:     make(chan bool),
-		tty:           tty(),
+		tty:           tput.Tty(),
+		lines:         0,
 	}
 
 	for _, option := range options {
@@ -248,10 +271,6 @@ func NewSpinnerManager(options ...managerOption) SpinnerManager {
 	}
 
 	return sm
-}
-
-func tty() bool {
-	return isatty.IsTerminal(os.Stdout.Fd()) || os.Getenv("YSMRR_FORCE_TTY") == "true"
 }
 
 func getWriter() io.Writer {

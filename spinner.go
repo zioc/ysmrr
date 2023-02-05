@@ -5,7 +5,7 @@ import (
 	"io"
 	"sync"
 
-	"github.com/chelnak/ysmrr/pkg/colors"
+	"github.com/zioc/ysmrr/pkg/colors"
 	"github.com/fatih/color"
 )
 
