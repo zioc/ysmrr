@@ -3,6 +3,7 @@
 package ysmrr
 
 import (
+	"context"
 	"io"
 	"os"
 	"os/signal"
@@ -42,6 +43,7 @@ type spinnerManager struct {
 	errorColor    colors.Color
 	messageColor  colors.Color
 	writer        io.Writer
+	context       context.Context
 	done          chan bool
 	hasUpdate     chan bool
 	ticks         *time.Ticker
@@ -78,19 +80,15 @@ func (sm *spinnerManager) GetSpinners() []*Spinner {
 
 // Start signals that all spinners should start.
 func (sm *spinnerManager) Start() {
-	// Handle SIGINT and SIGTERM so we can ensure that the
-	// terminal is properly reset.
-	// Unsure if this is the right place for this especially given
-	// that it calls os.Exit.
-	signals := make(chan os.Signal, 1)
-	signal.Notify(signals, os.Interrupt)
-
-	go func() {
-		<-signals
-		sm.Stop()
-		os.Exit(0)
-	}()
-
+	if sm.context == nil {
+		ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
+		go func() {
+			<-ctx.Done()
+			sm.Stop()
+			cancel()
+			os.Exit(0)
+		}()
+	}
 	sm.ticks = time.NewTicker(sm.frameDuration)
 	go sm.render()
 }
@@ -164,11 +162,10 @@ func (sm *spinnerManager) render() {
 	tput.Civis(sm.writer)
 	defer tput.Cnorm(sm.writer)
 
-outer:
 	for {
 		select {
 		case <-sm.done:
-			break outer
+			return
 		case <-sm.hasUpdate:
 			sm.renderFrame(false)
 		case <-sm.ticks.C:
@@ -217,6 +214,7 @@ func (sm *spinnerManager) renderFrame(animate bool) {
 			tput.Write(sm.writer, "\n")
 		}
 	}
+
 	if animate {
 		sm.setNextFrame()
 	}
@@ -269,7 +267,6 @@ func NewSpinnerManager(options ...managerOption) SpinnerManager {
 	for _, option := range options {
 		option(sm)
 	}
-
 	return sm
 }
 
@@ -284,6 +281,13 @@ func getWriter() io.Writer {
 
 // Option represents a spinner manager option.
 type managerOption func(*spinnerManager)
+
+// WithContext sets the context for spinner
+func WithContext(context context.Context) managerOption {
+	return func(sm *spinnerManager) {
+		sm.context = context
+	}
+}
 
 // WithAnimation sets the animation used for the spinners.
 // Available spinner types can be found in the package github.com/chelnak/ysmrr/pkg/animations.
