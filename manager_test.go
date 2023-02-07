@@ -6,9 +6,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/chelnak/ysmrr"
-	"github.com/chelnak/ysmrr/pkg/animations"
-	"github.com/chelnak/ysmrr/pkg/colors"
+	"github.com/zioc/ysmrr"
+	"github.com/zioc/ysmrr/pkg/animations"
+	"github.com/zioc/ysmrr/pkg/colors"
 	"github.com/stretchr/testify/assert"
 )
 

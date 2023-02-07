@@ -3,7 +3,7 @@ package colors_test
 import (
 	"testing"
 
-	"github.com/chelnak/ysmrr/pkg/colors"
+	"github.com/zioc/ysmrr/pkg/colors"
 	"github.com/fatih/color"
 	"github.com/stretchr/testify/assert"
 )

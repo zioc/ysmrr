@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/chelnak/ysmrr/pkg/animations"
+	"github.com/zioc/ysmrr/pkg/animations"
 	"github.com/stretchr/testify/assert"
 )
 

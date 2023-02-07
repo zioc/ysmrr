@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/chelnak/ysmrr/pkg/tput"
+	"github.com/zioc/ysmrr/pkg/tput"
 	"github.com/stretchr/testify/assert"
 )
 

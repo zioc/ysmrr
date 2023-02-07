@@ -3,7 +3,7 @@ package main
 import (
 	"time"
 
-	"github.com/chelnak/ysmrr"
+	"github.com/zioc/ysmrr"
 )
 
 type App struct {

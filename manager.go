@@ -290,7 +290,7 @@ func WithContext(context context.Context) managerOption {
 }
 
 // WithAnimation sets the animation used for the spinners.
-// Available spinner types can be found in the package github.com/chelnak/ysmrr/pkg/animations.
+// Available spinner types can be found in the package github.com/zioc/ysmrr/pkg/animations.
 // The default spinner animation is the Dots.
 func WithAnimation(a animations.Animation) managerOption {
 	return func(sm *spinnerManager) {
@@ -309,7 +309,7 @@ func WithFrameDuration(d time.Duration) managerOption {
 }
 
 // WithSpinnerColor sets the color of the spinners.
-// Available colors can be found in the package github.com/chelnak/ysmrr/pkg/colors.
+// Available colors can be found in the package github.com/zioc/ysmrr/pkg/colors.
 // The default color is FgHiGreen.
 func WithSpinnerColor(c colors.Color) managerOption {
 	return func(sm *spinnerManager) {
@@ -318,7 +318,7 @@ func WithSpinnerColor(c colors.Color) managerOption {
 }
 
 // WithErrorColor sets the color of the error icon.
-// Available colors can be found in the package github.com/chelnak/ysmrr/pkg/colors.
+// Available colors can be found in the package github.com/zioc/ysmrr/pkg/colors.
 // The default color is FgHiRed.
 func WithErrorColor(c colors.Color) managerOption {
 	return func(sm *spinnerManager) {
@@ -327,7 +327,7 @@ func WithErrorColor(c colors.Color) managerOption {
 }
 
 // WithCompleteColor sets the color of the complete icon.
-// Available colors can be found in the package github.com/chelnak/ysmrr/pkg/colors.
+// Available colors can be found in the package github.com/zioc/ysmrr/pkg/colors.
 // The default color is FgHiGreen.
 func WithCompleteColor(c colors.Color) managerOption {
 	return func(sm *spinnerManager) {
@@ -336,7 +336,7 @@ func WithCompleteColor(c colors.Color) managerOption {
 }
 
 // WithMessageColor sets the color of the message.
-// Available colors can be found in the package github.com/chelnak/ysmrr/pkg/colors.
+// Available colors can be found in the package github.com/zioc/ysmrr/pkg/colors.
 // The default color is NoColor.
 func WithMessageColor(c colors.Color) managerOption {
 	return func(sm *spinnerManager) {

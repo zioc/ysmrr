@@ -3,7 +3,6 @@ module github.com/zioc/ysmrr
 go 1.18
 
 require (
-	github.com/chelnak/ysmrr v0.2.1
 	github.com/fatih/color v1.14.1
 	github.com/mattn/go-colorable v0.1.13
 	github.com/stretchr/testify v1.8.1
