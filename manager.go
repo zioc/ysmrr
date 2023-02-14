@@ -187,8 +187,8 @@ func (sm *spinnerManager) renderFrame(animate bool) {
 	if width != 0 {
 		linesCount = 0
 		for _, s := range spinners {
-			linesCount = linesCount + (len(s.message)+2)/width
-			if (len(s.message)+2)%width != 0 {
+			linesCount = linesCount + (len([]rune(s.message))+3)/width
+			if (len([]rune(s.message))+3)%width != 0 {
 				linesCount = linesCount + 1
 			}
 		}

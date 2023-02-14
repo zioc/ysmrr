@@ -12,6 +12,7 @@ type Animation int
 
 const (
 	Arc Animation = iota
+	ArcDots
 	Arrow
 	Baloon
 	Baloon2
@@ -42,6 +43,7 @@ func (p Properties) GetCharacters() []string {
 
 var lookup = map[Animation]Properties{
 	Arc:            {100, []string{"◜", "◠", "◝", "◞", "◡", "◟"}},
+	ArcDots:        {100, []string{"⠈⠁", "⠈⠑", "⠈⠱", "⠈⡱", "⢀⡱", "⢄⡱", "⢄⡱", "⢆⡱", "⢎⡱", "⢎⡰", "⢎⡠", "⢎⡀", "⢎⠁", "⠎⠁", "⠊⠁"}},
 	Arrow:          {100, []string{"←", "↖", "↑", "↗", "→", "↘", "↓", "↙"}},
 	Baloon:         {140, []string{".", "o", "O", "@", "*"}},
 	Baloon2:        {120, []string{".", "o", "O", "°", "O", "o", "."}},

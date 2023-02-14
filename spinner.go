@@ -5,8 +5,8 @@ import (
 	"io"
 	"sync"
 
-	"github.com/zioc/ysmrr/pkg/colors"
 	"github.com/fatih/color"
+	"github.com/zioc/ysmrr/pkg/colors"
 )
 
 // Spinner manages a single spinner
@@ -78,11 +78,13 @@ func (s *Spinner) Error() {
 // Print prints the spinner at a given position.
 func (s *Spinner) Print(w io.Writer, char string) {
 	if s.IsComplete() {
-		print(w, "✓", s.completeColor)
+		print(w, " ✓", s.completeColor)
 	} else if s.IsError() {
-		print(w, "✗", s.errorColor)
-	} else {
+		print(w, " ✗", s.errorColor)
+	} else if len([]rune(char)) == 2 {
 		print(w, char, s.spinnerColor)
+	} else {
+		print(w, " " + char, s.spinnerColor)
 	}
 
 	s.mutex.Lock()
