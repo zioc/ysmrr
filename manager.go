@@ -109,6 +109,7 @@ func (sm *spinnerManager) Stop() {
 		tput.ClearLine(sm.writer)
 		s.Print(sm.writer, sm.chars[sm.frame])
 	}
+	tput.Cnorm(sm.writer)
 }
 
 // GetWriter returns the configured io.Writer.
