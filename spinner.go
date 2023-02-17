@@ -78,18 +78,18 @@ func (s *Spinner) Error() {
 // Print prints the spinner at a given position.
 func (s *Spinner) Print(w io.Writer, char string) {
 	if s.IsComplete() {
-		print(w, " ✓", s.completeColor)
+		print(w, " ✓ ", s.completeColor)
 	} else if s.IsError() {
-		print(w, " ✗", s.errorColor)
+		print(w, " ✗ ", s.errorColor)
 	} else if len([]rune(char)) == 2 {
-		print(w, char, s.spinnerColor)
+		print(w, char+" ", s.spinnerColor)
 	} else {
-		print(w, " " + char, s.spinnerColor)
+		print(w, " "+char+" ", s.spinnerColor)
 	}
 
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
-	message := fmt.Sprintf(" %s\r\n", s.message)
+	message := fmt.Sprintf("%s\r\n", s.message)
 	print(w, message, s.messageColor)
 }
 
