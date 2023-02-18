@@ -21,6 +21,7 @@ import (
 type SpinnerManager interface {
 	AddSpinner(msg string) *Spinner
 	GetSpinners() []*Spinner
+	SetSpinnersCount(count int)
 	GetWriter() io.Writer
 	GetAnimation() []string
 	GetFrameDuration() time.Duration
@@ -54,6 +55,17 @@ type spinnerManager struct {
 
 // AddSpinner adds a new spinner to the manager.
 func (sm *spinnerManager) AddSpinner(message string) *Spinner {
+	spinner := sm.createSpinner(message)
+
+	sm.mutex.Lock()
+	defer sm.mutex.Unlock()
+	sm.spinners = append(sm.spinners, spinner)
+
+	return spinner
+}
+
+// Create a new spinner with manager options.
+func (sm *spinnerManager) createSpinner(message string) *Spinner {
 	opts := SpinnerOptions{
 		Message:       message,
 		SpinnerColor:  sm.spinnerColor,
@@ -62,13 +74,7 @@ func (sm *spinnerManager) AddSpinner(message string) *Spinner {
 		MessageColor:  sm.messageColor,
 		HasUpdate:     sm.hasUpdate,
 	}
-	spinner := NewSpinner(opts)
-
-	sm.mutex.Lock()
-	defer sm.mutex.Unlock()
-	sm.spinners = append(sm.spinners, spinner)
-
-	return spinner
+	return NewSpinner(opts)
 }
 
 // GetSpinners returns the spinners managed by the manager.
@@ -78,7 +84,22 @@ func (sm *spinnerManager) GetSpinners() []*Spinner {
 	return sm.spinners
 }
 
-// Start signals that all spinners should start.
+// SetSpinnersCount defines the amount of spinners managed by the manager.
+// It will create empty sprinners or delete last ones to match requested size.
+func (sm *spinnerManager) SetSpinnersCount(count int) {
+	sm.mutex.Lock()
+	defer sm.mutex.Unlock()
+	if count > len(sm.spinners) {
+		for i:=len(sm.spinners); i < count; i++{
+			sm.spinners = append(sm.spinners, sm.createSpinner(""))
+		}
+	} else{
+		sm.spinners = sm.spinners[:count]
+	}
+}
+
+// Start the rendering loop in a goroutine.
+// Creates a interrupt signal if cancel context was not provided.
 func (sm *spinnerManager) Start() {
 	if sm.context == nil {
 		ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
